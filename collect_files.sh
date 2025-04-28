@@ -8,45 +8,25 @@ usage() {
     exit 1
 }
 
-# Проверка количества аргументов
-if [ $# -lt 2 ] || [ $# -gt 3 ]; then
-    usage
-fi
 
 # Парсинг аргументов
 max_depth=-1  # -1 означает без ограничений
 input_dir=""
 output_dir=""
 
-if [ "$1" == "--max_depth" ]; then
-    if [ $# -ne 4 ]; then
-        usage
-    fi
-    if ! [[ "$2" =~ ^[0-9]+$ ]]; then
-        echo "Ошибка: --max_depth требует числового значения"
-        exit 1
-    fi
-    max_depth=$2
-    input_dir=$3
-    output_dir=$4
+if [ "$#" -eq 4 ]; then
+    input_dir=$1
+    output_dir=$2
+    max_depth=$4
 else
     input_dir=$1
     output_dir=$2
 fi
 
-# Проверка существования входной директории
-if [ ! -d "$input_dir" ]; then
-    echo "Ошибка: входная директория не существует - $input_dir"
-    exit 1
-fi
-
-# Создание выходной директории
-mkdir -p "$output_dir"
-
 # Функция для копирования файлов с учетом глубины
 copy_files() {
-    local src="$1"
-    local current_depth="$2"
+    local src="$3"
+    local current_depth="$4"
     
     # Проверка ограничения глубины
     if [ $max_depth -ne -1 ] && [ $current_depth -gt $max_depth ]; then
